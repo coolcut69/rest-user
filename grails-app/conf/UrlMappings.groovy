@@ -11,7 +11,7 @@ class UrlMappings {
 		"500"(view:'/error')
         
         "/users"(controller: "users") {
-            action = [GET: "list", POST: "create", PUT: "bulkUpdate", DELETE: "removeAll"]
+            action = [GET: "list", POST: "create", PUT: "update", DELETE: "removeAll"]
         }
         
         "/users/$id"(resource: "users")

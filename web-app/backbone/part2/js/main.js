@@ -1,50 +1,51 @@
 // Models
-window.Wine = Backbone.Model.extend({
-    urlRoot:"../api/wines",
+window.User = Backbone.Model.extend({
+    url:"../../users",
     defaults:{
         "id":null,
-        "name":"",
-        "grapes":"",
-        "country":"USA",
-        "region":"California",
-        "year":"",
-        "description":"",
-        "picture":""
+        "email":"",
+        "userName":"",
+        "firstName":"",
+        "lastName":""
     }
 });
 
-window.WineCollection = Backbone.Collection.extend({
-    model:Wine,
-    url:"../api/wines"
+//tom zanger
+//wim cabaretier
+//stijn ontwerper
+
+window.UserCollection = Backbone.Collection.extend({
+    model:User,
+    url:"../../users"
 });
 
 
 // Views
-window.WineListView = Backbone.View.extend({
+window.UserListView = Backbone.View.extend({
 
     tagName:'ul',
 
     initialize:function () {
         this.model.bind("reset", this.render, this);
         var self = this;
-        this.model.bind("add", function (wine) {
-            $(self.el).append(new WineListItemView({model:wine}).render().el);
+        this.model.bind("add", function (user) {
+            $(self.el).append(new UserListItemView({model:user}).render().el);
         });
     },
 
     render:function (eventName) {
-        _.each(this.model.models, function (wine) {
-            $(this.el).append(new WineListItemView({model:wine}).render().el);
+        _.each(this.model.models, function (user) {
+            $(this.el).append(new UserListItemView({model:user}).render().el);
         }, this);
         return this;
     }
 });
 
-window.WineListItemView = Backbone.View.extend({
+window.UserListItemView = Backbone.View.extend({
 
     tagName:"li",
 
-    template:_.template($('#tpl-wine-list-item').html()),
+    template:_.template($('#tpl-user-list-item').html()),
 
     initialize:function () {
         this.model.bind("change", this.render, this);
@@ -62,9 +63,9 @@ window.WineListItemView = Backbone.View.extend({
     }
 });
 
-window.WineView = Backbone.View.extend({
+window.UserView = Backbone.View.extend({
 
-    template:_.template($('#tpl-wine-details').html()),
+    template:_.template($('#tpl-user-details').html()),
 
     initialize:function () {
         this.model.bind("change", this.render, this);
@@ -77,8 +78,8 @@ window.WineView = Backbone.View.extend({
 
     events:{
         "change input":"change",
-        "click .save":"saveWine",
-        "click .delete":"deleteWine"
+        "click .save":"saveUser",
+        "click .delete":"deleteUser"
     },
 
     change:function (event) {
@@ -90,27 +91,25 @@ window.WineView = Backbone.View.extend({
         // this.model.set(change);
     },
 
-    saveWine:function () {
+    saveUser:function () {
         this.model.set({
-            name:$('#name').val(),
-            grapes:$('#grapes').val(),
-            country:$('#country').val(),
-            region:$('#region').val(),
-            year:$('#year').val(),
-            description:$('#description').val()
+            email:$('#email').val(),
+            userName:$('#userName').val(),
+            lastName:$('#lastName').val(),
+            firstName:$('#firstName').val()
         });
         if (this.model.isNew()) {
-            app.wineList.create(this.model);
+            app.userList.create(this.model);
         } else {
             this.model.save();
         }
         return false;
     },
 
-    deleteWine:function () {
+    deleteUser:function () {
         this.model.destroy({
             success:function () {
-                alert('Wine deleted successfully');
+                alert('User deleted successfully');
                 window.history.back();
             }
         });
@@ -137,13 +136,13 @@ window.HeaderView = Backbone.View.extend({
     },
 
     events:{
-        "click .new":"newWine"
+        "click .new":"newUser"
     },
 
-    newWine:function (event) {
-        if (app.wineView) app.wineView.close();
-        app.wineView = new WineView({model:new Wine()});
-        $('#content').html(app.wineView.render().el);
+    newUser:function (event) {
+        if (app.userView) app.userView.close();
+        app.userView = new UserView({model:new User()});
+        $('#content').html(app.userView.render().el);
         return false;
     }
 });
@@ -154,7 +153,7 @@ var AppRouter = Backbone.Router.extend({
 
     routes:{
         "":"list",
-        "wines/:id":"wineDetails"
+        "users/:id":"userDetails"
     },
 
     initialize:function () {
@@ -162,17 +161,17 @@ var AppRouter = Backbone.Router.extend({
     },
 
     list:function () {
-        this.wineList = new WineCollection();
-        this.wineListView = new WineListView({model:this.wineList});
-        this.wineList.fetch();
-        $('#sidebar').html(this.wineListView.render().el);
+        this.userList = new UserCollection();
+        this.userListView = new UserListView({model:this.userList});
+        this.userList.fetch();
+        $('#sidebar').html(this.userListView.render().el);
     },
 
-    wineDetails:function (id) {
-        this.wine = this.wineList.get(id);
-        if (app.wineView) app.wineView.close();
-        this.wineView = new WineView({model:this.wine});
-        $('#content').html(this.wineView.render().el);
+    userDetails:function (id) {
+        this.user = this.userList.get(id);
+        if (app.userView) app.userView.close();
+        this.userView = new UserView({model:this.user});
+        $('#content').html(this.userView.render().el);
     }
 
 });

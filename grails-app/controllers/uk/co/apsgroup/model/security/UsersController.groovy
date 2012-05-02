@@ -33,7 +33,7 @@ class UsersController {
     // POST /users
     def create = {
         //create users that are posted from json    
-        //       response.status = 201
+               response.status = 201
         //       response.setHeader('Location', '/book/'+b.id)
         //       render au as JSON
     }
@@ -50,6 +50,8 @@ class UsersController {
     // PUT /users/{id}
     def update = {
         ApplicationUser au = ApplicationUser.get(params.id)
+        def json = request.JSON
+
         if (au == null) {
             render(status: 405)
         }
