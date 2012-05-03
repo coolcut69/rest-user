@@ -32,10 +32,18 @@ class UsersController {
 
     // POST /users
     def create = {
+        def json = request.JSON
+        ApplicationUser au = new ApplicationUser(
+                firstName: json['firstName'], 
+                lastName: json['lastName'], 
+                email: json['email'], 
+                userName: json['userName'],
+                uuid: 'toBeChanged').save(failOnError: true)
+        
         //create users that are posted from json    
                response.status = 201
-        //       response.setHeader('Location', '/book/'+b.id)
-        //       render au as JSON
+               response.setHeader('Location', '/users/'+au.id)
+               render au as JSON
     }
 
     // POST /users/{id}
@@ -66,9 +74,16 @@ class UsersController {
 
     // DELETE /users
     def removeAll = {
+        def json = request.JSON
+        ApplicationUser au = ApplicationUser.get(json['id'])
+        au.delete()
+        render(status: 200)
     }
 
     // DELETE /users/{id}
     def delete = {
+        ApplicationUser au = ApplicationUser.get(params.id)
+        au.delete()
+        render(status: 200)
     }
 }
