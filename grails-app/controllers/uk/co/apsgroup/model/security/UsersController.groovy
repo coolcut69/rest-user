@@ -55,7 +55,7 @@ class UsersController {
             render(status: 405)
         }
         // move to service
-        au.email = json['email'] 
+        au.email = json['email']  
         au.firstName = json['firstName'] 
         au.lastName = json['lastName'] 
         au.userName = json['userName']
