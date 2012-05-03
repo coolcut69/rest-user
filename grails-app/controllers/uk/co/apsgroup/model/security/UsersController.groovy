@@ -49,12 +49,19 @@ class UsersController {
 
     // PUT /users/{id}
     def update = {
-        ApplicationUser au = ApplicationUser.get(params.id)
         def json = request.JSON
-
+        ApplicationUser au = ApplicationUser.get(json['id'])
         if (au == null) {
             render(status: 405)
         }
+        // move to service
+        au.email = json['email'] 
+        au.firstName = json['firstName'] 
+        au.lastName = json['lastName'] 
+        au.userName = json['userName']
+        
+        au.save(failOnError: true)
+        render(status: 200)
     }
 
     // DELETE /users
